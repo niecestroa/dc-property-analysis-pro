@@ -13,7 +13,5 @@ This folder contains R and Python implementations of supervised learning methods
 Each model subfolder includes:
 - R script (`.R`)
 - Python script (`.py`)
-- Example dataset or data-loading template
-- Notes or a short README describing the workflow
 
 This layout highlights regression techniques while keeping the codebase modular and easy to navigate.
