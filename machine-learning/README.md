@@ -9,14 +9,8 @@ Modular machine learning library with parallel R and Python implementations for 
 ```
 machine-learning/
     classification/
-        r/
-        python/
     regression/
-        r/
-        python/
     unsupervised/
-        r/
-        python/
 ```
 
 Each folder contains model‑specific subdirectories. Every model includes:
