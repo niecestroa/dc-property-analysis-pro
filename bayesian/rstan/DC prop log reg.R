@@ -115,15 +115,15 @@ stan_data_logit <- list(
 ---
 
 # 2. **STAN MODEL — Bayesian Logistic Regression (Improved)**  
-Save this as: **`logistic_dc.stan`**
+# Save this as: **`logistic_dc.stan`**
 
-This is the clean, modern version with:
+# This is the clean, modern version with:
 
-- weakly‑informative priors  
-- vectorized likelihood  
-- posterior predictive checks  
-- log_lik for WAIC/LOO  
-- test‑set predictions  
+#- weakly‑informative priors  
+#- vectorized likelihood  
+#- posterior predictive checks  
+#- log_lik for WAIC/LOO  
+#- test‑set predictions  
 
 ```stan
 data {
