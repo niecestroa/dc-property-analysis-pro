@@ -14,7 +14,5 @@ This folder contains R and Python implementations of unsupervised learning metho
 Each model subfolder includes:
 - R script (`.R`)
 - Python script (`.py`)
-- Example dataset or data-loading template
-- Notes or a short README describing the workflow
 
 This structure keeps unsupervised methods cleanly separated and easy to extend.
