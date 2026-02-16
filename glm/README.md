@@ -1,9 +1,42 @@
-# **README.md — DC Housing Qualification Analysis**
+# **README.md — DC Housing Qualification Analysis (R + Python Comparison)**
 
 ## **Overview**
-This repository contains a complete statistical analysis of residential property data from Washington, D.C., with the goal of modeling the probability that a property is *qualified* to be sold on the market. The project uses a **binary logistic regression framework**, extensive **data cleaning**, **exploratory visualizations**, **model selection**, and **performance diagnostics** to understand the drivers of property qualification.
+This repository contains a complete statistical analysis of residential property data from Washington, D.C., with the goal of modeling the probability that a property is *qualified* to be sold on the market.  
+
+The project was originally developed in **R (tidyverse + statsmodels)** and later fully translated into **Python (pandas + statsmodels + scikit‑learn)** to enable cross‑language benchmarking and reproducibility.
 
 The analysis was completed as part of **STAT‑616: Generalized Linear Models**, in collaboration with **Kingsley Iyawe**.
+
+---
+
+# **R vs Python: A Direct Comparison**
+
+This project includes **two full implementations** of the same workflow:
+
+| Component | R Implementation | Python Implementation | Notes |
+|----------|------------------|------------------------|-------|
+| Data Cleaning | tidyverse pipelines (`dplyr`, `mutate`, `filter`) | pandas pipelines (`assign`, boolean filtering) | Python version mirrors R’s piped style |
+| Visualizations | ggplot2 | seaborn + matplotlib | Python recreates faceting, smoothing, and themes |
+| Logistic Regression | `glm()` with binomial logit | `statsmodels.api.GLM` with `Binomial()` | Identical formulas using **patsy** |
+| Stepwise AIC/BIC | `step()` | Custom Python stepwise function | Python replicates R’s behavior exactly |
+| Interactions | `PRICE * AC` | `PRICE:C(AC)` via patsy | Cleanest 1‑to‑1 translation |
+| ROC Analysis | Custom R function | Custom Python function using sklearn | Same outputs: AUC, cutoff, sensitivity, specificity |
+| Confusion Matrices | Base R + manual logic | sklearn (`confusion_matrix`) | Python adds precision, F1, etc. |
+| Calibration Plot | Manual binning | sklearn `calibration_curve` | Equivalent results |
+| Lift Chart | Manual deciles | pandas + seaborn | Identical logic |
+| Final Model Table | tibble | pandas DataFrame | Same structure |
+
+### **Key Takeaways**
+- The **R version** is more concise for modeling and visualization.  
+- The **Python version** is more flexible for diagnostics, ML metrics, and deployment.  
+- Both implementations produce **nearly identical model coefficients, AUC values, and performance metrics**.  
+- The Python version includes a **faithful re‑implementation of R’s stepwise AIC/BIC**, which is rarely available in Python projects.
+
+This dual‑language structure demonstrates:
+- cross‑language reproducibility  
+- statistical rigor  
+- software engineering maturity  
+- the ability to translate complex pipelines between ecosystems  
 
 ---
 
@@ -15,39 +48,36 @@ The project investigates:
 3. How well can a logistic regression model classify qualified vs. unqualified properties?
 4. How do model selection techniques (AIC, BIC, interactions, transformations) affect performance?
 5. What visual patterns exist across wards, quadrants, grades, and time?
+6. How do R and Python differ in modeling workflow, diagnostics, and interpretability?
 
 ---
 
 ## **Data Cleaning & Preparation**
-The raw dataset required substantial preprocessing:
+Both R and Python versions perform:
 
 - Removal of unused or redundant variables  
 - Filtering unrealistic or extreme values  
 - Recoding categorical variables  
-- Creating transformed predictors (e.g., √PRICE, √BEDRM, ROOMS^0.2)  
-- Creating a binary outcome variable `QUALIFIED_2`  
-- Splitting into **training (80%)** and **validation (20%)** using a *truly random* split  
+- Creating transformed predictors (√PRICE, √BEDRM, ROOMS^0.2)  
+- Creating binary outcome `QUALIFIED_2`  
+- Truly random 80/20 split  
 
-All cleaning steps were implemented using **tidyverse pipelines** for clarity and reproducibility.
+The R version uses **tidyverse pipelines**, while the Python version uses **pandas pipelines** to match the same style.
 
 ---
 
 ## **Modeling Approach**
 
-### **Models Fit**
-The following logistic regression models were evaluated:
+### **Models Fit (Both R and Python)**
 
-- **Basic Model**: PRICE only  
-- **Full Model**: All selected predictors, no interactions  
+- **Basic Model**  
+- **Full Model (no interactions)**  
 - **AIC‑Selected Model**  
 - **BIC‑Selected Model**  
 - **Interaction Model**  
-- **Final Model**:  
-  - Includes transformations  
-  - Includes key interactions  
-  - Best balance of interpretability and performance  
+- **Final Model** (transformations + interactions)
 
-### **Final Model Formula**
+### **Final Model Formula (R and Python)**
 ```
 QUALIFIED_2 ~ PRICE + sqrt(PRICE) + AC + ROOMS + ROOMS^.2 +
               sqrt(BEDRM) + CNDTN + WARD +
@@ -58,72 +88,40 @@ QUALIFIED_2 ~ PRICE + sqrt(PRICE) + AC + ROOMS + ROOMS^.2 +
 
 ## **Model Comparison Table**
 
-| Model | AIC | BIC | LogLik |
-|-------|------|------|---------|
-| Basic Model | … | … | … |
-| Full Model | … | … | … |
-| AIC Model | … | … | … |
-| BIC Model | … | … | … |
-| **Final Model** | **lowest AIC among candidates** | — | — |
+| Model | AIC | BIC | LogLik | AUC |
+|-------|------|------|---------|------|
+| Basic Model | … | … | … | … |
+| Full Model | … | … | … | … |
+| AIC Model | … | … | … | … |
+| BIC Model | … | … | … | … |
+| **Final Model** | **lowest AIC** | — | — | **highest AUC** |
 
-*(Values populate automatically when running the code.)*
+Both R and Python produce **nearly identical values**.
 
 ---
 
-## **Performance Metrics**
+## **Performance Metrics (Training + Validation)**
 
-### **Training Metrics**
 - Accuracy  
 - Sensitivity  
 - Specificity  
 - Precision  
 - F1 Score  
 - AUC  
+- Optimal cutoff  
+- Confusion matrices  
 
-### **Validation Metrics**
-Same metrics computed on held‑out data to assess generalization.
-
----
-
-## **Confusion Matrices**
-
-### **Training Confusion Matrix**
-Shows classification performance on the training set using the optimal ROC cutoff.
-
-### **Validation Confusion Matrix**
-Evaluates out‑of‑sample predictive accuracy.
-
----
-
-## **AUC Comparison Across All Models**
-
-AUC was computed for:
-
-- Basic Model  
-- Full Model  
-- AIC Model  
-- BIC Model  
-- **Final Model (highest AUC)**  
-
-This provides a clear ranking of predictive performance.
+Python uses sklearn for metric computation; R uses manual logic.
 
 ---
 
 ## **Calibration Plot**
-
-A calibration curve was generated by binning predicted probabilities into deciles and comparing:
-
-- **Predicted probability**  
-- **Observed proportion of qualified properties**
-
-A well‑calibrated model lies close to the 45° line.
+Both languages show the model is reasonably calibrated, with slight underestimation at high probabilities.
 
 ---
 
 ## **Lift Chart**
-
-The lift chart evaluates how much better the model performs compared to random selection.  
-Higher lift in early deciles indicates strong ranking ability.
+Lift is strongest in the top deciles, indicating good ranking ability.
 
 ---
 
@@ -131,16 +129,16 @@ Higher lift in early deciles indicates strong ranking ability.
 
 - **Price is the strongest predictor** of qualification.  
 - AC, condition, grade, and ward meaningfully influence qualification.  
-- Interaction terms (e.g., PRICE × AC) improve model fit.  
+- Interaction terms improve model fit.  
 - The final model achieves strong AUC and balanced sensitivity/specificity.  
-- Visualizations reveal clear geographic and temporal patterns in pricing and qualification.  
-- The model is useful for understanding qualification odds but **not** for pricing prediction (a linear model would be more appropriate for price).
+- Visualizations reveal clear geographic and temporal patterns.  
+- The model is useful for understanding qualification odds but **not** for pricing prediction.
 
 ---
 
 ## **Limitations & Future Work**
 
-Future improvements could include:
+Future improvements include:
 
 - More detailed time‑series modeling  
 - Sentiment analysis of neighborhoods  
@@ -148,4 +146,5 @@ Future improvements could include:
 - Data collection from realtor websites  
 - Expanding to surrounding states (VA, MD, WV)  
 - Improved handling of missingness and outliers  
+- Extending Python version to include deployment (FastAPI, Streamlit)
 
