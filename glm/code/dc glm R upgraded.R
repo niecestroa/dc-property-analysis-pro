@@ -4,6 +4,9 @@ library(broom)
 library(modelr)
 library(boot)
 library(scales)
+library(rms)
+library(ggplot2)
+library(yardstick)
 
 # ---------------------------------------------------------
 # Load Data
@@ -316,10 +319,6 @@ validationROC$specopt
 # ---------------------------------------------------------
 # Section 2: Visualisation (Upgraded to Tidyverse Pipelines)
 # ---------------------------------------------------------
-
-library(rms)
-library(ggplot2)
-library(tidyverse)
 
 # Ensure categorical variables are set once
 Final_T2 <- Final_T %>%
@@ -725,9 +724,6 @@ dcproperty %>%
   theme_bw() +
   theme(legend.position = "right")
 
-  library(tidyverse)
-library(broom)
-
 # ---------------------------------------------------------
 # Extract model fit statistics (AIC, BIC, logLik)
 # ---------------------------------------------------------
@@ -776,11 +772,6 @@ valid_roc <- final_model %>%
 final_model_performance <- bind_cols(fit_stats, train_roc, valid_roc)
 
 final_model_performance
-
-library(tidyverse)
-library(broom)
-library(yardstick)
-library(ggplot2)
 
 # ---------------------------------------------------------
 # Helper: Extract model metrics
