@@ -1,6 +1,5 @@
-### 1. R: add GRADE ids and Stan data (logistic)
+### R: add GRADE ids and Stan data (logistic)
 
-```r
 # Assume df = DC_data with a factor GRADE
 df <- df %>% mutate(GRADE_id = as.integer(GRADE))
 N_GRADE <- length(unique(df$GRADE_id))
@@ -37,13 +36,12 @@ stan_data_logit_hier <- list(
   X_test    = X_test,
   grade_test = GRADE_test
 )
-```
 
 ---
 
-### 2. Stan: hierarchical logistic with non‑centered random intercepts
+### Stan: hierarchical logistic with non‑centered random intercepts
 
-Save as `logistic_dc_hier.stan`:
+# Save as `logistic_dc_hier.stan`:
 
 ```stan
 data {
@@ -115,12 +113,10 @@ generated quantities {
 }
 ```
 
-Fit in R:
+# Fit in R:
 
-```r
 fit_logit_hier <- stan(
   file = "logistic_dc_hier.stan",
   data = stan_data_logit_hier,
   chains = 4, iter = 2000, warmup = 1000, seed = 400
 )
-```
